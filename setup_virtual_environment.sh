@@ -14,7 +14,7 @@ if [[ "$branch" != "" ]]; then
 fi
 
 mkdir -p $project_source
-mkdir -p $venv_source
+mkdir -p $venv_dir
 
 # Download Source
 
@@ -23,5 +23,11 @@ git clone $branch_clause $source_repo $project_source
 #Create a python virtual environment
 virtualenv $venv_dir
 source $venv_dir/bin/activate
+
+# install dependancy modules
+my_dir=$(pwd)
+cd $project_source
+python3 "$project_source/setup.py" develop
+cd $my_dir
 
 deactivate
