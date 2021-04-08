@@ -1,22 +1,32 @@
 #!/bin/bash
-echo "Install httpd..."
+echo -e "Install httpd..."
 dnf install httpd -y
-echo "Install httpd-devel..."
+
+echo -e "\nInstall httpd-devel..."
 dnf install httpd-devel -y
-echo "Install python3..."
+
+echo -e "\nInstall python3..."
 dnf install python3 -y
-echo "Install python3-pip..."
+
+echo -e "\nInstall python3-pip..."
 dnf install python3-pip -y
-echo "Install python3-mod-wsgi..."
+
+echo -e "\nInstall python3-mod-wsgi..."
 dnf install python3-mod_wsgi -y
-echo "Install virtualenv..."
+
+echo -e "\nInstall virtualenv..."
 dnf install virtualenv -y
 
-echo "Open port 80..."
+echo -e "\nOpen port 80..."
 firewall-cmd --permanent --add-port=80/tcp
+
+echo -e "Open port 443..."
+firewall-cmd --permanent --add-port=443/tcp
+
+echo -e "Reload firewall"
 firewall-cmd --reload
 
-echo "Write out wsgi configuration..."
+echo -e "\nWrite out wsgi configuration..."
 cat > /etc/httpd/conf.d/python-wsgi.conf << __WSGICONF__
 WSGIDaemonProcess myapp processes=1 threads=10 display-name=%{GROUP} python-home=/opt/gtsi/sample_flask_webapp/venv
 WSGIProcessGroup myapp
@@ -28,31 +38,43 @@ WSGIScriptAlias / /var/www/html/app.py
 </Directory>
 __WSGICONF__
 
-echo "Write bootstrap flask app..."
+echo -e "\nWrite bootstrap flask app..."
 cat > /var/www/html/app.py << __FLASK_BOOT_STRAP__
 from gtsi.webapp import flask_app
-
 application =  flask_app.app
-
 if __name__ == "__main__":
     flask_app.app.run()
 __FLASK_BOOT_STRAP__
 
-echo "Enable httpd..."
+echo -e "\nEnable httpd..."
 systemctl enable httpd
 
 # Needed to allow wsgi daemon to do outbound connections
-echo "Set wsgi to allow outbound connections..."
+echo -e "\nSet wsgi to allow outbound connections..."
 /usr/sbin/setsebool -P httpd_can_network_connect 1
 
-echo "Install java..."
+echo -e "\nInstall java..."
 dnf install java -y
 
-echo "Install git..."
+echo -e "\nInstall git..."
 dnf install git -y
 
-echo "Install tar..."
+echo -e "\nInstall tar..."
 dnf install tar -y
 
-echo "Install expect..."
-dnf install expect -y
+
+echo -e "\nInstall mod_ssl"
+yum install mod_ssl -y
+
+echo -e "\nInstall expect"
+yum install expect -y
+
+
+echo -e "\nCreate dir for ssl cert..."
+mkdir -p /etc/httpd/ssl
+
+echo -e "\nGenerate self signed certificate..."
+./generate_self_signed_cert.sh
+
+echo -e "\nConfigure apache ssl..."
+cp ./ssl.conf /etc/httpd/conf.d/ssl.conf
