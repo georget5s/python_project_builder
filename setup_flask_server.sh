@@ -1,14 +1,14 @@
 #!/bin/bash
 echo "Install httpd..."
-dnf install httpd
+dnf install httpd -y
 echo "Install httpd-devel..."
-dnf install httpd-devel
+dnf install httpd-devel -y
 echo "Install python3..."
-dnf install python3
+dnf install python3 -y
 echo "Install python3-pip..."
-dnf install python3-pip
+dnf install python3-pip -y
 echo "Install python3-mod-wsgi..."
-dnf install python3-mod_wsgi
+dnf install python3-mod_wsgi -y
 
 
 echo "Open port 80..."
@@ -18,12 +18,9 @@ firewall-cmd --reload
 echo "Write out wsgi configuration..."
 cat > /etc/httpd/conf.d/python-wsgi.conf << __WSGICONF__
 WSGIDaemonProcess myapp processes=1 threads=10 display-name=%{GROUP} python-home=/opt/gtsi/sample_flask/venv
-
 WSGIProcessGroup myapp
 WSGIApplicationGroup %{GLOBAL}
-
 WSGIScriptAlias / /var/www/html/app.py
-
 <Directory /var/www/html>
     Order allow,deny
     Allow from all
@@ -45,4 +42,8 @@ echo "Set wsgi to allow outbound connections..."
 /usr/sbin/setsebool -P httpd_can_network_connect 1
 
 echo "Install java..."
-dnf install java
+dnf install java -y
+
+echo "Install git..."
+dnf install git -y
+
