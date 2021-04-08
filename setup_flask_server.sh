@@ -30,7 +30,7 @@ __WSGICONF__
 
 echo "Write bootstrap flask app..."
 cat > /var/www/html/app.py << __FLASK_BOOT_STRAP__
-from gtsiweb import flask_app
+from gtsi.webapp import flask_app
 if __name__ == "__main__":
     flask_app.app.run()
 __FLASK_BOOT_STRAP__
@@ -50,5 +50,3 @@ dnf install git -y
 
 echo "Install tar..."
 dnf install tar -y
-
-
