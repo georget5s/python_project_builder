@@ -9,7 +9,8 @@ echo "Install python3-pip..."
 dnf install python3-pip -y
 echo "Install python3-mod-wsgi..."
 dnf install python3-mod_wsgi -y
-
+echo "Install virtualenv..."
+dnf install virtualenv -y
 
 echo "Open port 80..."
 firewall-cmd --permanent --add-port=80/tcp
@@ -46,4 +47,3 @@ dnf install java -y
 
 echo "Install git..."
 dnf install git -y
-
