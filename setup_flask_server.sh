@@ -18,7 +18,7 @@ firewall-cmd --reload
 
 echo "Write out wsgi configuration..."
 cat > /etc/httpd/conf.d/python-wsgi.conf << __WSGICONF__
-WSGIDaemonProcess myapp processes=1 threads=10 display-name=%{GROUP} python-home=/opt/gtsi/sample_flask/venv
+WSGIDaemonProcess myapp processes=1 threads=10 display-name=%{GROUP} python-home=/opt/gtsi/sample_flask_webapp/venv
 WSGIProcessGroup myapp
 WSGIApplicationGroup %{GLOBAL}
 WSGIScriptAlias / /var/www/html/app.py
@@ -50,4 +50,5 @@ dnf install git -y
 
 echo "Install tar..."
 dnf install tar -y
+
 
