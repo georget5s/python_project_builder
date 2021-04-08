@@ -47,3 +47,7 @@ dnf install java -y
 
 echo "Install git..."
 dnf install git -y
+
+echo "Install tar..."
+dnf install tar -y
+
