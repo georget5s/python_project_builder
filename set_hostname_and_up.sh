@@ -9,12 +9,19 @@ read continue
 if [[ $continue != "y" ]]; then
         echo "Exiting, no action taken..."
 fi
-
+echo "Rename host..."
 echo "$1" > /etc/hostname
+
+
+echo "Stop network..."
+sudo systemctl stop NetworkManager.service
+
+
+echo "Readdress server..."
 
 rip='10\.0\.2\.200'
 nip=`echo "$ip" | sed 's/\\./\\\./g'`
-cat << EOF | sed "s/$rip/$nip/g" > /etc/sysconfig/network-scripts/ifcfg-enp0s3
+cat << __EOD__ | sed "s/$rip/$nip/g" > /etc/sysconfig/network-scripts/ifcfg-enp0s3
 TYPE="Ethernet"
 PROXY_METHOD="none"
 BROWSER_ONLY="no"
@@ -34,7 +41,8 @@ IPV6_PRIVACY="no"
 PREFIX="24"
 IPADDR="10.0.2.200"
 GATEWAY="10.0.2.2"
-EOF
+__EOD__
 
-nmcli network off
-nmcli network on
+echo "Restart network..."
+sudo systemctl restart NetworkManager.service
+
