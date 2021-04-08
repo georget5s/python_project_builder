@@ -53,3 +53,6 @@ dnf install git -y
 
 echo "Install tar..."
 dnf install tar -y
+
+echo "Install expect..."
+dnf install expect -y
